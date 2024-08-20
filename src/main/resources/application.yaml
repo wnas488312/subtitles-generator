@@ -1,0 +1,28 @@
+s-generator:
+  config:
+    temp-file-prefix: SGVideo
+    video-format: mp4
+    video-codec-name: libx264
+    frame-rate: 24
+
+spring:
+  # PostgreSQL settings
+  datasource:
+    url: jdbc:postgresql://localhost:5432/sgapp
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+
+  # H2 settings
+  h2:
+    datasource:
+      url: jdbc:h2:mem:sgapp
+      username: sa
+      password: password
+      driver-class-name: org.h2.Driver
+    console:
+      enabled: true
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.yaml
+    enabled: true

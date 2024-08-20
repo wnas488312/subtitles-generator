@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01
+      author: wnas
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/create_subtitles_table.sql
+            relativeToChangelogFile: false
+  - changeSet:
+      id: 02
+      author: wnas
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/create_video_file_table.sql
+            relativeToChangelogFile: false
