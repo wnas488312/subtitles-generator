@@ -8,7 +8,7 @@
 		<version>3.3.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.wnas488312</groupId>
+	<groupId>com.wnas</groupId>
 	<artifactId>subtitles-generator</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
 	<name>subtitles-generator</name>
