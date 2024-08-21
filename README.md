@@ -13,6 +13,7 @@ Subtitles Generator is a user-friendly Spring Boot application designed to help 
 - [Configuration](#configuration)
 - [Database](#database)
 - [Troubleshooting](#troubleshooting)
+- [License](#license)
 
 ## Features
 
@@ -100,3 +101,6 @@ No additional configuration is needed for H2. If PostgreSQL is not available, th
 - **H2:** The H2 database will be created in-memory and will be available as long as the application is running.
 ## Troubleshooting
 - **Application fails to start:** Ensure the application is running on the default port 8080, and that no other application is using this port.
+
+## License
+This project is licensed under the Mozilla Public License 2.0. See the [LICENSE](LICENSE.txt) file for details.
