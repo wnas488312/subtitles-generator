@@ -85,17 +85,18 @@ public class VideoGeneratorImpl implements VideoGenerator{
             int width = frameGrabber.getImageWidth();
             int height = frameGrabber.getImageHeight();
             int frameRate = (int) frameGrabber.getFrameRate();
+            int videoBitrate = frameGrabber.getVideoBitrate();
             double durationInMicroseconds = frameGrabber.getLengthInTime() / 1_000_000.0;
 
-            try (FFmpegFrameRecorder frameRecorder = new FFmpegFrameRecorder(videoFile.getPath(), width, height)) {
+            try (FFmpegFrameRecorder frameRecorder = new FFmpegFrameRecorder(videoFile.getPath(), width, height);
+                 Java2DFrameConverter converter = new Java2DFrameConverter()) {
                 frameRecorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
-                frameRecorder.setPixelFormat(avutil.AV_PIX_FMT_YUVJ420P);
+                frameRecorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
                 frameRecorder.setFrameRate(frameRate);
+                frameRecorder.setVideoBitrate(videoBitrate);
                 frameRecorder.setFormat("mp4");
 
                 frameRecorder.start();
-
-                Java2DFrameConverter converter = new Java2DFrameConverter();
                 Frame frame;
 
                 int currentFrameNumber = 0;
@@ -105,7 +106,7 @@ public class VideoGeneratorImpl implements VideoGenerator{
 
                     BufferedImage bgImage = converter.convert(frame);
                     BufferedImage overlayImage = getImageInRange(currentFrameNumber, data.imagesWithFrameCoordinates());
-                    BufferedImage combinedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+                    BufferedImage combinedImage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
 
                     Graphics2D g = combinedImage.createGraphics();
                     g.drawImage(bgImage, 0, 0, Color.BLACK, null);

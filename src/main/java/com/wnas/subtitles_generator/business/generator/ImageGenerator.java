@@ -42,7 +42,7 @@ public class ImageGenerator {
         BufferedImage image = new BufferedImage(this.width, this.height,  BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
         g2d.setFont(font);
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.WHITE);
 
         FontMetrics fm = g2d.getFontMetrics();
         final int xTextPosition = (this.width - fm.stringWidth(this.text)) / 2;
