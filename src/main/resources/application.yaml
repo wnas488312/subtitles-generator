@@ -6,6 +6,9 @@ s-generator:
     frame-rate: 24
 
 spring:
+  application:
+    name: subtitles-generator
+
   # PostgreSQL settings
   datasource:
     url: jdbc:postgresql://localhost:5432/sgapp
