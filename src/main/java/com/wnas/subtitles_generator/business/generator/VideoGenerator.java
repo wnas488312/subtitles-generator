@@ -15,8 +15,7 @@ public interface VideoGenerator {
     /**
      * Appends list of subtitles text into original video, saves it on disk, and creates video DB entry.
      * @param data          Object containing text to append with frame coordinates.
-     * @param subtitlesId   Identifier of video generation process.
      * @throws Exception    When file cannot be created or bytedeco classes throws an error.
      */
-    void combineOriginalVideoWithSubtitles(VideoGeneratorProcessingContext data, Long subtitlesId) throws Exception;
+    void combineOriginalVideoWithSubtitles(VideoGeneratorProcessingContext data) throws Exception;
 }

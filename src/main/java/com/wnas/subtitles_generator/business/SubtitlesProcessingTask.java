@@ -67,7 +67,7 @@ public class SubtitlesProcessingTask extends Thread{
             videoGenerator.generateVideoFromImages(data);
             log.info("Generating subtitles video for subtitles with id: {} finished", subtitlesId);
             log.info("Generating combined video for subtitles with id: {}", subtitlesId);
-            videoGenerator.combineOriginalVideoWithSubtitles(data, subtitlesId);
+            videoGenerator.combineOriginalVideoWithSubtitles(data);
             log.info("Generating combined video for subtitles with id: {} finished", subtitlesId);
 
             progressService.updateProgressDone(subtitlesId);

@@ -1,6 +1,7 @@
 package com.wnas.subtitles_generator.business.generator;
 
 import com.wnas.subtitles_generator.api.model.VideoType;
+import com.wnas.subtitles_generator.business.provider.FFmpegProvider;
 import com.wnas.subtitles_generator.business.service.FileService;
 import com.wnas.subtitles_generator.business.service.ProgressService;
 import com.wnas.subtitles_generator.business.service.message.GenerationProgressStage;
@@ -26,11 +27,13 @@ public class VideoGeneratorImpl implements VideoGenerator{
     private final AppConfig config;
     private final FileService fileService;
     private final ProgressService progressService;
+    private final FFmpegProvider fFmpegProvider;
 
-    public VideoGeneratorImpl(AppConfig config, FileService fileService, ProgressService progressService) {
+    public VideoGeneratorImpl(AppConfig config, FileService fileService, ProgressService progressService, FFmpegProvider fFmpegProvider) {
         this.config = config;
         this.fileService = fileService;
         this.progressService = progressService;
+        this.fFmpegProvider = fFmpegProvider;
     }
 
     /**
@@ -51,7 +54,7 @@ public class VideoGeneratorImpl implements VideoGenerator{
             int numberOfFramesToGenerate = data.imagesWithFrameCoordinates().getLast().endFrame();
             int currentFrame = 0;
             for (VideoGeneratorProcessingContext.ImageWithFrameCoordinates imageWithFrameCoordinates : data.imagesWithFrameCoordinates()) {
-                Frame frame = converter.convert(imageWithFrameCoordinates.image());
+                final Frame frame = converter.convert(imageWithFrameCoordinates.image());
                 int bound = imageWithFrameCoordinates.endFrame();
                 for (int ignored = imageWithFrameCoordinates.startFrame(); ignored <= bound; ignored++) {
                     currentFrame++;
@@ -60,8 +63,6 @@ public class VideoGeneratorImpl implements VideoGenerator{
                 float progress = ((float) currentFrame / numberOfFramesToGenerate) * 100;
                 progressService.updateProgress(data.dbVideoFileId(), GenerationProgressStage.SUBTITLES, (int) progress);
             }
-
-            recorder.stop();
         }
     }
 
@@ -69,17 +70,17 @@ public class VideoGeneratorImpl implements VideoGenerator{
      * {@inheritDoc}
      */
     @Override
-    public void combineOriginalVideoWithSubtitles(VideoGeneratorProcessingContext data, Long subtitlesId) throws Exception {
-        VideoFileEntity originalFile = fileService.getFile(subtitlesId, VideoType.ORIGINAL);
+    public void combineOriginalVideoWithSubtitles(VideoGeneratorProcessingContext data) throws Exception {
+        VideoFileEntity originalFile = fileService.getFile(data.dbVideoFileId(), VideoType.ORIGINAL);
 
         File videoFile = fileService.createFile(
-                subtitlesId,
+                data.dbVideoFileId(),
                 VideoFileType.COMBINED,
                 String.format("result-%s", originalFile.getFileName())
         );
 
-        try (FFmpegFrameGrabber imageGrabber = new FFmpegFrameGrabber(originalFile.getFilePath());
-             FFmpegFrameGrabber audioGrabber = new FFmpegFrameGrabber(originalFile.getFilePath())) {
+        try (FFmpegFrameGrabber imageGrabber = fFmpegProvider.getGrabber(originalFile.getFilePath());
+             FFmpegFrameGrabber audioGrabber = fFmpegProvider.getGrabber(originalFile.getFilePath())) {
             imageGrabber.start();
             audioGrabber.start();
 
@@ -87,7 +88,6 @@ public class VideoGeneratorImpl implements VideoGenerator{
             final int height = imageGrabber.getImageHeight();
             final double frameRate = imageGrabber.getFrameRate();
             final double durationInMicroseconds = imageGrabber.getLengthInTime() / 1_000_000.0;
-            FFmpegLogCallback.set();
 
             try (FFmpegFrameRecorder frameRecorder = createRecorder(videoFile.getPath(), width, height, frameRate, imageGrabber);
                  Java2DFrameConverter converter = new Java2DFrameConverter()) {
@@ -95,7 +95,7 @@ public class VideoGeneratorImpl implements VideoGenerator{
                 Frame frame;
 
                 int currentFrameNumber = 0;
-                log.info("Generating image frames for combined video for id: {}", subtitlesId);
+                log.info("Generating image frames for combined video for id: {}", data.dbVideoFileId());
                 while ((frame = imageGrabber.grabImage()) != null) {
                     log.debug("Combine frame {}/{}", currentFrameNumber, frameRate * durationInMicroseconds);
                     currentFrameNumber++;
@@ -123,7 +123,7 @@ public class VideoGeneratorImpl implements VideoGenerator{
                     progressService.updateProgress(data.dbVideoFileId(), GenerationProgressStage.VIDEO, (int) progress);
                 }
 
-                log.info("Generating audio for combined video for id: {}", subtitlesId);
+                log.info("Generating audio for combined video for id: {}", data.dbVideoFileId());
                 currentFrameNumber = 0;
                 Frame sampleFrame;
                 while ((sampleFrame = audioGrabber.grabSamples()) != null) {
@@ -141,9 +141,7 @@ public class VideoGeneratorImpl implements VideoGenerator{
                     }
                 }
 
-                audioGrabber.stop();
-                imageGrabber.stop();
-                frameRecorder.stop();
+                progressService.updateProgress(data.dbVideoFileId(), GenerationProgressStage.AUDIO, 100);
             }
         }
     }
@@ -167,7 +165,7 @@ public class VideoGeneratorImpl implements VideoGenerator{
         final Integer sampleRate =  Objects.isNull(grabber)? null: grabber.getSampleRate();
         final Integer audioChannels =  Objects.isNull(grabber)? null: grabber.getAudioChannels();
 
-        FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(filePath, width, height);
+        FFmpegFrameRecorder recorder = fFmpegProvider.getRecorder(filePath, width, height);
         recorder.setVideoCodec(getCodecByConfiguration());
         recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
         recorder.setFrameRate(frameRate);

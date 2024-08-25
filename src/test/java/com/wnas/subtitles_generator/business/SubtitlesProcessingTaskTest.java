@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
@@ -30,7 +29,6 @@ import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -38,7 +36,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SubtitlesProcessingTaskTest {
 
-    private Long subtitlesId = 1L;
+    private static final Long SUBTITLES_ID = 1L;
     @Mock
     private VideoGenerator videoGenerator;
     @Mock
@@ -48,7 +46,7 @@ class SubtitlesProcessingTaskTest {
     @Mock
     private ProgressServiceImpl progressService;
 
-    private List<File> filesToDelete = new ArrayList<>();
+    private final List<File> filesToDelete = new ArrayList<>();
 
     @AfterEach
     public void cleanUp() {
@@ -61,10 +59,10 @@ class SubtitlesProcessingTaskTest {
 
         final VideoFileEntity videoFileEntity = TestData.videoFileEntity();
         videoFileEntity.setFilePath(getExampleFilePath());
-        when(fileService.getFile(eq(subtitlesId), eq(VideoType.ORIGINAL))).thenReturn(videoFileEntity);
+        when(fileService.getFile(eq(SUBTITLES_ID), eq(VideoType.ORIGINAL))).thenReturn(videoFileEntity);
 
         final SubtitlesEntity subtitles = TestData.subtitlesEntity();
-        when(subtitlesService.getDbEntryById(eq(subtitlesId))).thenReturn(subtitles);
+        when(subtitlesService.getDbEntryById(eq(SUBTITLES_ID))).thenReturn(subtitles);
         when(subtitlesService.saveEntry(any(SubtitlesEntity.class)))
                 .thenAnswer((Answer<SubtitlesEntity>) invocation -> (SubtitlesEntity) invocation.getArguments()[0]);
 
@@ -75,20 +73,20 @@ class SubtitlesProcessingTaskTest {
         SubtitlesProcessingTask task = createTestedClass();
         task.run(); // I don't want to run it asynchronously in tests.
 
-        verify(subtitlesService, times(1)).setStage(eq(subtitlesId), eq(VideoFileStatus.PROCESSING));
-        verify(subtitlesService, times(1)).setStage(eq(subtitlesId), eq(VideoFileStatus.READY));
-        verify(progressService, times(1)).updateProgress(eq(subtitlesId), eq(GenerationProgressStage.IMAGES), eq(50));
-        verify(progressService, times(1)).updateProgress(eq(subtitlesId), eq(GenerationProgressStage.IMAGES), eq(100));
+        verify(subtitlesService, times(1)).setStage(eq(SUBTITLES_ID), eq(VideoFileStatus.PROCESSING));
+        verify(subtitlesService, times(1)).setStage(eq(SUBTITLES_ID), eq(VideoFileStatus.READY));
+        verify(progressService, times(1)).updateProgress(eq(SUBTITLES_ID), eq(GenerationProgressStage.IMAGES), eq(50));
+        verify(progressService, times(1)).updateProgress(eq(SUBTITLES_ID), eq(GenerationProgressStage.IMAGES), eq(100));
 
         ArgumentCaptor<VideoGeneratorProcessingContext> captorSubtitles = ArgumentCaptor.forClass(VideoGeneratorProcessingContext.class);
         verify(videoGenerator, times(1)).generateVideoFromImages(captorSubtitles.capture());
         assertVideoProcessingContext(captorSubtitles.getValue(), videoFileEntity);
 
         ArgumentCaptor<VideoGeneratorProcessingContext> captorCombined = ArgumentCaptor.forClass(VideoGeneratorProcessingContext.class);
-        verify(videoGenerator, times(1)).combineOriginalVideoWithSubtitles(captorCombined.capture(), eq(subtitlesId));
+        verify(videoGenerator, times(1)).combineOriginalVideoWithSubtitles(captorCombined.capture());
         assertVideoProcessingContext(captorCombined.getValue(), videoFileEntity);
 
-        verify(progressService, times(1)).updateProgressDone(eq(subtitlesId));
+        verify(progressService, times(1)).updateProgressDone(eq(SUBTITLES_ID));
     }
 
     @Test
@@ -98,10 +96,10 @@ class SubtitlesProcessingTaskTest {
 
         final VideoFileEntity videoFileEntity = TestData.videoFileEntity();
         videoFileEntity.setFilePath(getExampleFilePath());
-        when(fileService.getFile(eq(subtitlesId), eq(VideoType.ORIGINAL))).thenReturn(videoFileEntity);
+        when(fileService.getFile(eq(SUBTITLES_ID), eq(VideoType.ORIGINAL))).thenReturn(videoFileEntity);
 
         final SubtitlesEntity subtitles = TestData.subtitlesEntity();
-        when(subtitlesService.getDbEntryById(eq(subtitlesId))).thenReturn(subtitles);
+        when(subtitlesService.getDbEntryById(eq(SUBTITLES_ID))).thenReturn(subtitles);
         when(subtitlesService.saveEntry(any(SubtitlesEntity.class)))
                 .thenAnswer((Answer<SubtitlesEntity>) invocation -> (SubtitlesEntity) invocation.getArguments()[0]);
 
@@ -113,8 +111,8 @@ class SubtitlesProcessingTaskTest {
                 .isInstanceOf(RuntimeException.class)
                 .hasMessage(expectedErrorMessage);
 
-        verify(progressService, times(1)).updateProgressProcessFailed(eq(subtitlesId));
-        verify(subtitlesService, times(1)).setStageToError(eq(subtitlesId), eq(expectedErrorMessage));
+        verify(progressService, times(1)).updateProgressProcessFailed(eq(SUBTITLES_ID));
+        verify(subtitlesService, times(1)).setStageToError(eq(SUBTITLES_ID), eq(expectedErrorMessage));
     }
 
     @Test
@@ -123,20 +121,20 @@ class SubtitlesProcessingTaskTest {
         doNothing().when(subtitlesService).setStage(anyLong(), any(VideoFileStatus.class));
 
         final VideoFileEntity videoFileEntity = TestData.videoFileEntity();
-        when(fileService.getFile(eq(subtitlesId), eq(VideoType.ORIGINAL))).thenReturn(videoFileEntity);
+        when(fileService.getFile(eq(SUBTITLES_ID), eq(VideoType.ORIGINAL))).thenReturn(videoFileEntity);
 
         SubtitlesProcessingTask task = createTestedClass();
         assertThatThrownBy(() -> task.run())
                 .isInstanceOf(RuntimeException.class)
                 .hasMessageContaining(expectedErrorMessage);
 
-        verify(progressService, times(1)).updateProgressProcessFailed(eq(subtitlesId));
-        verify(subtitlesService, times(1)).setStageToError(eq(subtitlesId), contains(expectedErrorMessage));
+        verify(progressService, times(1)).updateProgressProcessFailed(eq(SUBTITLES_ID));
+        verify(subtitlesService, times(1)).setStageToError(eq(SUBTITLES_ID), contains(expectedErrorMessage));
     }
 
     private void assertVideoProcessingContext(VideoGeneratorProcessingContext context, VideoFileEntity videoFileEntity) {
         assertThat(context).isNotNull();
-        assertThat(context.dbVideoFileId()).isEqualTo(subtitlesId);
+        assertThat(context.dbVideoFileId()).isEqualTo(SUBTITLES_ID);
         assertThat(context.originalFileName()).isEqualTo(videoFileEntity.getFileName());
         assertThat(context.width()).isEqualTo(1920);
         assertThat(context.height()).isEqualTo(1080);
@@ -170,7 +168,7 @@ class SubtitlesProcessingTaskTest {
                 .withFileService(fileService)
                 .withSubtitlesService(subtitlesService)
                 .withProgressService(progressService)
-                .withSubtitlesId(subtitlesId)
+                .withSubtitlesId(SUBTITLES_ID)
                 .build();
     }
 }
