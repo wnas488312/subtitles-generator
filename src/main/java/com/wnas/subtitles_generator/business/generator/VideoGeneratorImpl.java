@@ -44,10 +44,10 @@ public class VideoGeneratorImpl implements VideoGenerator{
                 String.format("subtitles-%s", data.originalFileName())
         );
 
-        try (FFmpegFrameRecorder recorder = createRecorder(videoFile.getPath(), data.width(), data.height(), config.getFrameRate())) {
+        try (FFmpegFrameRecorder recorder = createRecorder(videoFile.getPath(), data.width(), data.height(), config.getFrameRate());
+             Java2DFrameConverter converter = new Java2DFrameConverter()) {
             recorder.start();
 
-            Java2DFrameConverter converter = new Java2DFrameConverter();
             int numberOfFramesToGenerate = data.imagesWithFrameCoordinates().getLast().endFrame();
             int currentFrame = 0;
             for (VideoGeneratorProcessingContext.ImageWithFrameCoordinates imageWithFrameCoordinates : data.imagesWithFrameCoordinates()) {
@@ -62,7 +62,6 @@ public class VideoGeneratorImpl implements VideoGenerator{
             }
 
             recorder.stop();
-            recorder.release();
         }
     }
 
@@ -79,28 +78,25 @@ public class VideoGeneratorImpl implements VideoGenerator{
                 String.format("result-%s", originalFile.getFileName())
         );
 
-        try (FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(originalFile.getFilePath())) {
-            frameGrabber.start();
+        try (FFmpegFrameGrabber imageGrabber = new FFmpegFrameGrabber(originalFile.getFilePath());
+             FFmpegFrameGrabber audioGrabber = new FFmpegFrameGrabber(originalFile.getFilePath())) {
+            imageGrabber.start();
+            audioGrabber.start();
 
-            int width = frameGrabber.getImageWidth();
-            int height = frameGrabber.getImageHeight();
-            int frameRate = (int) frameGrabber.getFrameRate();
-            int videoBitrate = frameGrabber.getVideoBitrate();
-            double durationInMicroseconds = frameGrabber.getLengthInTime() / 1_000_000.0;
+            final int width = imageGrabber.getImageWidth();
+            final int height = imageGrabber.getImageHeight();
+            final double frameRate = imageGrabber.getFrameRate();
+            final double durationInMicroseconds = imageGrabber.getLengthInTime() / 1_000_000.0;
+            FFmpegLogCallback.set();
 
-            try (FFmpegFrameRecorder frameRecorder = new FFmpegFrameRecorder(videoFile.getPath(), width, height);
+            try (FFmpegFrameRecorder frameRecorder = createRecorder(videoFile.getPath(), width, height, frameRate, imageGrabber);
                  Java2DFrameConverter converter = new Java2DFrameConverter()) {
-                frameRecorder.setVideoCodec(avcodec.AV_CODEC_ID_H264);
-                frameRecorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
-                frameRecorder.setFrameRate(frameRate);
-                frameRecorder.setVideoBitrate(videoBitrate);
-                frameRecorder.setFormat("mp4");
-
                 frameRecorder.start();
                 Frame frame;
 
                 int currentFrameNumber = 0;
-                while ((frame = frameGrabber.grabImage()) != null) {
+                log.info("Generating image frames for combined video for id: {}", subtitlesId);
+                while ((frame = imageGrabber.grabImage()) != null) {
                     log.debug("Combine frame {}/{}", currentFrameNumber, frameRate * durationInMicroseconds);
                     currentFrameNumber++;
 
@@ -127,7 +123,26 @@ public class VideoGeneratorImpl implements VideoGenerator{
                     progressService.updateProgress(data.dbVideoFileId(), GenerationProgressStage.VIDEO, (int) progress);
                 }
 
-                frameGrabber.stop();
+                log.info("Generating audio for combined video for id: {}", subtitlesId);
+                currentFrameNumber = 0;
+                Frame sampleFrame;
+                while ((sampleFrame = audioGrabber.grabSamples()) != null) {
+                    if (sampleFrame.samples != null) {
+                        log.debug("Combine audio frame {}/{}", currentFrameNumber, frameRate * durationInMicroseconds);
+                        currentFrameNumber++;
+
+                        frameRecorder.recordSamples(sampleFrame.samples);
+
+                        double progress = (currentFrameNumber / (frameRate * durationInMicroseconds)) * 100;
+                        if (progress >= 100) {
+                            progress = 99;
+                        }
+                        progressService.updateProgress(data.dbVideoFileId(), GenerationProgressStage.AUDIO, (int) progress);
+                    }
+                }
+
+                audioGrabber.stop();
+                imageGrabber.stop();
                 frameRecorder.stop();
             }
         }
@@ -147,15 +162,32 @@ public class VideoGeneratorImpl implements VideoGenerator{
         return createRecorder(filePath, width, height, frameRate, null);
     }
 
-    private FFmpegFrameRecorder createRecorder(String filePath, int width, int height, double frameRate, Integer bitRate) {
+    private FFmpegFrameRecorder createRecorder(String filePath, int width, int height, double frameRate, FFmpegFrameGrabber grabber) {
+        final Integer videoBitrate = Objects.isNull(grabber)? null: grabber.getVideoBitrate();
+        final Integer sampleRate =  Objects.isNull(grabber)? null: grabber.getSampleRate();
+        final Integer audioChannels =  Objects.isNull(grabber)? null: grabber.getAudioChannels();
+
         FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(filePath, width, height);
+        recorder.setVideoCodec(getCodecByConfiguration());
+        recorder.setPixelFormat(avutil.AV_PIX_FMT_YUV420P);
         recorder.setFrameRate(frameRate);
-        recorder.setVideoCodecName(config.getVideoCodecName());
         recorder.setFormat(config.getVideoFormat());
-        recorder.setPixelFormat(org.bytedeco.ffmpeg.global.avutil.AV_PIX_FMT_YUV420P);
-        if (!Objects.isNull(bitRate)) {
-            recorder.setVideoBitrate(bitRate);
+
+        if (!Objects.isNull(grabber)) {
+            recorder.setVideoBitrate(videoBitrate);
+            recorder.setSampleRate(sampleRate);
+            recorder.setAudioChannels(audioChannels);
+            recorder.setAudioCodec(avcodec.AV_CODEC_ID_AAC);
         }
+
         return recorder;
+    }
+
+    private int getCodecByConfiguration() {
+        return switch (config.getVideoCodecName()) {
+            case "H264" -> avcodec.AV_CODEC_ID_H264;
+            case "H265" -> avcodec.AV_CODEC_ID_H265;
+            default -> avcodec.AV_CODEC_ID_NONE;
+        };
     }
 }

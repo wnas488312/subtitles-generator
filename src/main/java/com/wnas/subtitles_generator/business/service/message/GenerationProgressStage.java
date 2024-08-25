@@ -10,6 +10,7 @@ public enum GenerationProgressStage {
     IMAGES("Generating images..."),
     SUBTITLES("Combining images..."),
     VIDEO("Generating video..."),
+    AUDIO("Applying audio..."),
     DONE("Done."),
     ERROR("Error.");
 

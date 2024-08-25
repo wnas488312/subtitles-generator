@@ -2,7 +2,7 @@ s-generator:
   config:
     temp-file-prefix: SGVideo
     video-format: mp4
-    video-codec-name: libx264
+    video-codec-name: H264
     frame-rate: 24
 
 spring:

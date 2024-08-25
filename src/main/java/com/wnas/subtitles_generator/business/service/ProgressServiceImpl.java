@@ -55,6 +55,7 @@ public class ProgressServiceImpl implements ProgressService{
         singleProgressStore.put(GenerationProgressStage.IMAGES, 0);
         singleProgressStore.put(GenerationProgressStage.SUBTITLES, 0);
         singleProgressStore.put(GenerationProgressStage.VIDEO, 0);
+        singleProgressStore.put(GenerationProgressStage.AUDIO, 0);
         return singleProgressStore;
     }
 }
