@@ -27,7 +27,7 @@ Subtitles Generator is a user-friendly Spring Boot application designed to help 
 
 ## Technologies
 
-- **Java**: 22
+- **Java**: 21
 - **Spring Boot**: 3.3.2
 - **Maven**: Dependency management and build tool.
 - **PostgreSQL**: Primary database.
@@ -37,7 +37,7 @@ Subtitles Generator is a user-friendly Spring Boot application designed to help 
 
 Before running the application, ensure you have the following installed:
 
-- Java 22
+- Java 21
 - Maven 3.8+
 - PostgreSQL (optional, only if you want to use an external database)
 
