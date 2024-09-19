@@ -5,6 +5,15 @@ s-generator:
     video-codec-name: H264
     frame-rate: 24
 
+  subtitles-generation:
+    font-size: 12
+    font-color:
+      r: 200
+      g: 200
+      b: 200
+    default-font-name: Arial
+    bottom-margin: 50
+
 spring:
   application:
     name: subtitles-generator
