@@ -6,5 +6,5 @@ package com.wnas.subtitles_generator.api.model.response;
  * @param g green (0 - 255).
  * @param b blue (0 - 255).
  */
-public record DefaultPropertiesColorResponse(Byte r, Byte g, Byte b) {
+public record DefaultPropertiesColorResponse(Integer r, Integer g, Integer b) {
 }
