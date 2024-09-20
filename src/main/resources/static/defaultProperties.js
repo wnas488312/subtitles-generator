@@ -1,18 +1,17 @@
+const fontSizeInput = document.getElementById('fontSize');
+const fontNameDropDown = document.getElementById('fontName');
+const bottomMarginInput = document.getElementById('bottomMargin');
+const fontColorInput = document.getElementById('fontColor');
+
 function getDefaultProperties() {
-    let properties;
     fetch('/properties/default', { method: 'GET' })
         .then(response => response.json())
         .then(data => populatePropertiesForm(data));
 }
 
 function populatePropertiesForm(properties) {
-    console.log("default Font Name: " + properties.defaultFontName)
-
-    console.log("Font Name 1241241: " + properties.fontNames)
-
     const dropdown = document.getElementById('fontName');
     properties.fontNames.forEach(fontName => {
-        console.log("Font Name: " + fontName)
         const fontNameNoSpace = fontName.replace(/\s+/g, '');
         const opt = document.createElement('option');
         opt.value = fontNameNoSpace;
@@ -20,10 +19,29 @@ function populatePropertiesForm(properties) {
         dropdown.appendChild(opt);
     });
 
-    document.getElementById('fontName').value = properties.defaultFontName;
-    document.getElementById('fontSize').value = properties.fontSize;
-    document.getElementById('bottomMargin').value = properties.bottomMargin;
-    document.getElementById('fontColor').value = rgbToHex(properties.fontColor.r, properties.fontColor.g, properties.fontColor.b);
+    fontNameDropDown.value = properties.defaultFontName;
+    fontSizeInput.value = properties.fontSize;
+    bottomMarginInput.value = properties.bottomMargin;
+    fontColorInput.value = rgbToHex(properties.fontColor.r, properties.fontColor.g, properties.fontColor.b);
+
+    fontSizeInput.addEventListener('change', () => updateProperties());
+    fontNameDropDown.addEventListener('change', () => updateProperties());
+    fontColorInput.addEventListener('change', () => updateProperties());
+    bottomMarginInput.addEventListener('change', () => updateProperties());
+
+    updateProperties();
+}
+
+function updateProperties() {
+    const fontName = fontNameDropDown.value;
+    const fontSize = parseInt(fontSizeInput.value);
+
+    const fontValue = fontSize + "px " + fontName;
+
+    let textOverlay = document.getElementById('textOverlay');
+    textOverlay.style.font = fontValue;
+    textOverlay.style.color = fontColorInput.value;
+    textOverlay.style.top = (-((fontSize * 1.5) + parseInt(bottomMarginInput.value))) + "px";
 }
 
 function rgbToHex(r, g, b) {
