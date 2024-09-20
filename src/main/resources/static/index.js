@@ -10,6 +10,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const playPauseBtn = document.getElementById('playPauseBtn');
     const seekBar = document.getElementById('seekBar');
     const proceedButton = document.getElementById('proceed');
+    const togglePropertiesForm = document.getElementById('toggleForm');
+    const form = document.getElementById('dynamicForm');
+    form.style.display = 'none';
 
     dropZone.addEventListener('dragover', (event) => {
         event.preventDefault();
@@ -24,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         dropZone.classList.remove('dragover');
         initializeProcess(event);
+        getDefaultProperties();
     });
 
     videoPlayer.style.display = 'none';
@@ -52,6 +56,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     proceedButton.addEventListener('click', () => {
         startProcessing();
+    });
+
+    togglePropertiesForm.addEventListener('change', () => {
+        if (togglePropertiesForm.checked) {
+            form.style.display = 'block';
+        } else {
+            form.style.display = 'none';
+        }
     });
 
     function findIndexInRange(value, arr) {
