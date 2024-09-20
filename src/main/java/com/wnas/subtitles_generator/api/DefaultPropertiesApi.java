@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * API used to get default properties for subtitles visual properties, like font or bottom margin.
  */
-@RequestMapping("/defaultProperties")
+@RequestMapping("/properties")
 public interface DefaultPropertiesApi {
 
-    @GetMapping
+    /**
+     * Responds with default subtitles properties taken from configuration with available fonts names.
+     * @return  Default properties.
+     */
+    @GetMapping("/default")
     @ResponseBody
     DefaultPropertiesResponse getDefaultProperties();
 }
