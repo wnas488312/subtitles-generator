@@ -18,9 +18,12 @@ function startProcessing() {
         }
     }
 
+    const fontNameDropDown = document.getElementById('fontName');
+    const bottomMarginInput = document.getElementById('bottomMargin');
+
     const req = {
-        bottomMargin: 50,
-        fontName: "Arial",
+        bottomMargin: parseInt(bottomMarginInput.value),
+        fontName: fontNameDropDown.value,
         textChunks: textChunks,
     };
 
