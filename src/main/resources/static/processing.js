@@ -20,11 +20,15 @@ function startProcessing() {
 
     const fontNameDropDown = document.getElementById('fontName');
     const bottomMarginInput = document.getElementById('bottomMargin');
+    const fontSizeInput = document.getElementById('fontSize');
+    const fontColorInput = document.getElementById('fontColor');
 
     const req = {
         bottomMargin: parseInt(bottomMarginInput.value),
         fontName: fontNameDropDown.value,
         textChunks: textChunks,
+        fontSize: parseInt(fontSizeInput.value),
+        fontColor: hexToRgb(fontColorInput.value),
     };
 
     fetch('/subtitles/' + id, {
@@ -42,4 +46,19 @@ function startProcessing() {
                     getProgress(id)
                 });
         });
+}
+
+function hexToRgb(hex) {
+    hex = hex.replace(/^#/, '');
+
+    let bigint = parseInt(hex, 16);
+    let rValue = (bigint >> 16) & 255;
+    let gValue = (bigint >> 8) & 255;
+    let bValue = bigint & 255;
+
+    return { 
+        r: rValue, 
+        g: gValue, 
+        b: bValue 
+    };
 }
