@@ -3,6 +3,7 @@ package com.wnas.subtitles_generator.business.service;
 import com.wnas.subtitles_generator.api.model.request.UpdatePropertiesRequest;
 import com.wnas.subtitles_generator.api.model.request.SubtitlesTextChunk;
 import com.wnas.subtitles_generator.data.SubtitlesRepo;
+import com.wnas.subtitles_generator.data.entity.ColorEntity;
 import com.wnas.subtitles_generator.data.entity.SubtitlesEntity;
 import com.wnas.subtitles_generator.data.entity.TextChunk;
 import com.wnas.subtitles_generator.data.entity.enumerators.VideoFileStatus;
@@ -58,6 +59,20 @@ public class SubtitlesServiceImpl implements SubtitlesService {
 
         if (!StringUtils.isBlank(request.fontName())) {
             old.setFontName(request.fontName());
+        }
+
+        if (!Objects.isNull(request.fontSize())) {
+            old.setFontSize(request.fontSize());
+        }
+
+        if (!Objects.isNull(request.fontColor())) {
+            old.setColor(
+                    new ColorEntity(
+                            request.fontColor().r(),
+                            request.fontColor().g(),
+                            request.fontColor().b()
+                    )
+            );
         }
 
         if (!CollectionUtils.isEmpty(request.textChunks())) {

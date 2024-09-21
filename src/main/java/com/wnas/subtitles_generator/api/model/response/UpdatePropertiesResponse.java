@@ -1,5 +1,6 @@
 package com.wnas.subtitles_generator.api.model.response;
 
+import com.wnas.subtitles_generator.api.model.RgbColorObject;
 import com.wnas.subtitles_generator.api.model.request.SubtitlesTextChunk;
 
 import java.time.LocalDateTime;
@@ -12,6 +13,8 @@ import java.util.List;
  * @param height        Height of a video in pixels.
  * @param bottomMargin  Distance between text and bottom frame in pixels.
  * @param fontName      Name of a font that will be used in appended subtitles in video.
+ * @param fontColor     Color og a font in RGB.
+ * @param fontSize      Size of a font in pixels.
  * @param textChunks    Chunks of subtitles text with frame coordinates.
  * @param creationDate  Date and time when subtitles generation process started.
  */
@@ -21,6 +24,8 @@ public record UpdatePropertiesResponse(
         Integer height,
         Integer bottomMargin,
         String fontName,
+        RgbColorObject fontColor,
+        Integer fontSize,
         List<SubtitlesTextChunk> textChunks,
         LocalDateTime creationDate
 ) {

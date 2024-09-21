@@ -13,3 +13,10 @@ databaseChangeLog:
         - sqlFile:
             path: db/changelog/sql/create_video_file_table.sql
             relativeToChangelogFile: false
+  - changeSet:
+      id: 03
+      author: wnas
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/alter_table_subtitles_add_font_columns.sql
+            relativeToChangelogFile: false

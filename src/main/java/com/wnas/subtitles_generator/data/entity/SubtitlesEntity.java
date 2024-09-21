@@ -10,6 +10,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "subtitles")
@@ -47,6 +48,37 @@ public class SubtitlesEntity {
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
+
+    @Column(name = "font_size")
+    private Integer fontSize;
+
+    @Column(name = "font_color_r")
+    private Integer colorR;
+
+    @Column(name = "font_color_g")
+    private Integer colorG;
+
+    @Column(name = "font_color_b")
+    private Integer colorB;
+
+    @Transient
+    private ColorEntity color;
+
+    @PostLoad
+    public void postLoad() {
+        color = new ColorEntity(colorR, colorG, colorB);
+    }
+
+    @PrePersist
+    public void prePersist() {
+        if (Objects.isNull(color)) {
+            return;
+        }
+
+        colorR = color.getR();
+        colorG = color.getG();
+        colorB = color.getB();
+    }
 
     public SubtitlesEntity() {
     }
