@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubtitlesGenerationDefaultPropertiesFontColorConfig {
+public class PropertiesFontColor {
     private Integer r;
     private Integer g;
     private Integer b;

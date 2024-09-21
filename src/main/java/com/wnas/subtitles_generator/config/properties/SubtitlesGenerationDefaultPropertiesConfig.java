@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class SubtitlesGenerationDefaultPropertiesConfig {
     private Integer fontSize;
-    private SubtitlesGenerationDefaultPropertiesFontColorConfig fontColor;
+    private PropertiesFontColor fontColor;
     private String defaultFontName;
     private Integer bottomMargin;
 }

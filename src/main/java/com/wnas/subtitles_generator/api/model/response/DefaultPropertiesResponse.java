@@ -1,5 +1,7 @@
 package com.wnas.subtitles_generator.api.model.response;
 
+import com.wnas.subtitles_generator.api.model.RgbColorObject;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  */
 public record DefaultPropertiesResponse(
         Integer fontSize,
-        DefaultPropertiesColorResponse fontColor,
+        RgbColorObject fontColor,
         String defaultFontName,
         List<String> fontNames,
         Integer bottomMargin

@@ -2,7 +2,7 @@ package com.wnas.subtitles_generator.api.endpoint;
 
 import com.wnas.subtitles_generator.api.DefaultPropertiesApi;
 import com.wnas.subtitles_generator.api.model.response.DefaultPropertiesResponse;
-import com.wnas.subtitles_generator.business.converters.SubtitlesGenerationDefaultPropertiesFontColorConfigToDefaultPropertiesColorResponseConverter;
+import com.wnas.subtitles_generator.business.converters.PropertiesFontColorToRgbColorObjectConverter;
 import com.wnas.subtitles_generator.business.service.FontsService;
 import com.wnas.subtitles_generator.config.properties.SubtitlesGenerationDefaultPropertiesConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +15,12 @@ import java.util.List;
 @RestController
 public class DefaultPropertiesEndpoint implements DefaultPropertiesApi {
     private final SubtitlesGenerationDefaultPropertiesConfig config;
-    private final SubtitlesGenerationDefaultPropertiesFontColorConfigToDefaultPropertiesColorResponseConverter converter;
+    private final PropertiesFontColorToRgbColorObjectConverter converter;
     private final FontsService fontsService;
 
     public DefaultPropertiesEndpoint(
             SubtitlesGenerationDefaultPropertiesConfig config,
-            SubtitlesGenerationDefaultPropertiesFontColorConfigToDefaultPropertiesColorResponseConverter converter,
+            PropertiesFontColorToRgbColorObjectConverter converter,
             FontsService fontsService
     ) {
         this.config = config;
