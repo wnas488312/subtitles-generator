@@ -44,7 +44,7 @@ function updateProperties() {
     let textOverlay = document.getElementById('textOverlay');
     textOverlay.style.font = fontValue;
     textOverlay.style.color = fontColorInput.value;
-    textOverlay.style.top = (-((fontSize * ratio * 1.5) + parseInt(bottomMarginInput.value))) + "px";
+    textOverlay.style.top = (-((fontSize * 1.5) + parseInt(bottomMarginInput.value)) * ratio) + "px";
 }
 
 function rgbToHex(r, g, b) {
