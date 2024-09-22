@@ -3,6 +3,9 @@ const input = document.getElementById('userInput');
 const sliderValues = [];
 let id;
 
+let videoWidth = undefined;
+let videoHeight = undefined;
+
 document.addEventListener("DOMContentLoaded", function () {
     const dropZone = document.getElementById('dropZone');
     const videoContainer = document.getElementById('videoContainer');
@@ -13,6 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const togglePropertiesForm = document.getElementById('toggleForm');
     const form = document.getElementById('dynamicForm');
     form.style.display = 'none';
+
+    videoPlayer.addEventListener('loadedmetadata', function() {
+        videoWidth = videoPlayer.videoWidth;
+        videoHeight = videoPlayer.videoHeight;
+        console.log(`Video width: ${videoWidth}px`);
+        console.log(`Video height: ${videoHeight}px`);
+    });
 
     dropZone.addEventListener('dragover', (event) => {
         event.preventDefault();

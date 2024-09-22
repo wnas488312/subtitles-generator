@@ -36,12 +36,15 @@ function updateProperties() {
     const fontName = fontNameDropDown.value;
     const fontSize = parseInt(fontSizeInput.value);
 
-    const fontValue = fontSize + "px " + fontName;
+    const ratio = videoWidth == undefined? 1: 600 / videoWidth;
+    console.log("Ratio: " + ratio);
+
+    const fontValue = fontSize * ratio + "px " + fontName;
 
     let textOverlay = document.getElementById('textOverlay');
     textOverlay.style.font = fontValue;
     textOverlay.style.color = fontColorInput.value;
-    textOverlay.style.top = (-((fontSize * 1.5) + parseInt(bottomMarginInput.value))) + "px";
+    textOverlay.style.top = (-((fontSize * ratio * 1.5) + parseInt(bottomMarginInput.value))) + "px";
 }
 
 function rgbToHex(r, g, b) {
