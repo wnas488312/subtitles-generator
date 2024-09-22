@@ -69,9 +69,9 @@ public class SubtitlesEntity {
         color = new ColorEntity(colorR, colorG, colorB);
     }
 
-    @PrePersist
+    @PreUpdate
     public void prePersist() {
-        if (Objects.isNull(color)) {
+        if (Objects.isNull(color) || Objects.isNull(color.getR()) || Objects.isNull(color.getG()) || Objects.isNull(color.getB())) {
             return;
         }
 

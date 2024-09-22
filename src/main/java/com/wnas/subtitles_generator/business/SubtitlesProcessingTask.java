@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -112,7 +113,9 @@ public class SubtitlesProcessingTask extends Thread{
                 entry.getFontName(),
                 entry.getWidth(),
                 entry.getHeight(),
-                entry.getBottomMargin()
+                entry.getBottomMargin(),
+                entry.getFontSize(),
+                new Color(entry.getColor().getR(), entry.getColor().getG(), entry.getColor().getB())
         );
         final BufferedImage image = imageGenerator.generateImage();
         return new VideoGeneratorProcessingContext.ImageWithFrameCoordinates(image, chunk.getStartFrame(), chunk.getEndFrame());
