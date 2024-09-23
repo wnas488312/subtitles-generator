@@ -74,6 +74,14 @@ http://localhost:8080
 ```
 This address is the default provided by Spring Boot.
 
+## Custom Fonts
+This web app supports the use of custom fonts. To use custom fonts, follow these steps:
+1. Adding Fonts:
+Place your custom font files (.ttf format) into the ```src/main/resources/fonts/``` directory of the project.
+2. Automatic Loading:
+Upon startup, the application will automatically detect and load all fonts stored in the ```src/main/resources/fonts/``` folder. No additional configuration is required. Once loaded, the fonts will be available for use throughout the application.
+3. After the fonts are loaded, you can use them is subtitles generation.
+
 ## Configuration
 The application is pre-configured to work with either PostgreSQL or H2, depending on your environment.
 
