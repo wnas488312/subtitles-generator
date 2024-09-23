@@ -1,5 +1,6 @@
 package com.wnas.subtitles_generator.business.service;
 
+import com.wnas.subtitles_generator.api.model.RgbColorObject;
 import com.wnas.subtitles_generator.api.model.request.SubtitlesTextChunk;
 import com.wnas.subtitles_generator.api.model.request.UpdatePropertiesRequest;
 import com.wnas.subtitles_generator.data.SubtitlesRepo;
@@ -94,7 +95,7 @@ class SubtitlesServiceImplTest {
         when(textChunksConverter.convert(any())).thenReturn(textChunk);
 
         UpdatePropertiesRequest request = TestData.updatePropertiesRequest();
-        request = new UpdatePropertiesRequest(null, request.fontName(), request.textChunks());
+        request = new UpdatePropertiesRequest(null, request.fontName(), new RgbColorObject(0, 0, 0), 24, request.textChunks());
 
         SubtitlesEntity updated = service.updateSubtitlesPropertiesFromRequest(subtitles.getId(), request);
 
@@ -118,7 +119,7 @@ class SubtitlesServiceImplTest {
         when(textChunksConverter.convert(any())).thenReturn(textChunk);
 
         UpdatePropertiesRequest request = TestData.updatePropertiesRequest();
-        request = new UpdatePropertiesRequest(request.bottomMargin(), null, request.textChunks());
+        request = new UpdatePropertiesRequest(request.bottomMargin(), null, new RgbColorObject(0, 0, 0), 24, request.textChunks());
 
         SubtitlesEntity updated = service.updateSubtitlesPropertiesFromRequest(subtitles.getId(), request);
 
