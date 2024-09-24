@@ -1,5 +1,7 @@
 package com.wnas.subtitles_generator.business.service;
 
+import com.wnas.subtitles_generator.data.CustomFontRepo;
+import com.wnas.subtitles_generator.data.entity.CustomFontEntity;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,12 @@ import java.util.Optional;
 public class FontsServiceImpl implements FontsService {
     private static final String FONT_FILE_EXTENSION = ".ttf";
     private static final String FONTS_FOLDER_NAME= "fonts";
+
+    private final CustomFontRepo fontRepo;
+
+    public FontsServiceImpl(CustomFontRepo fontRepo) {
+        this.fontRepo = fontRepo;
+    }
 
     /**
      * {@inheritDoc}
@@ -54,6 +62,10 @@ public class FontsServiceImpl implements FontsService {
                 boolean success = ge.registerFont(font);
 
                 if (success) {
+                    final CustomFontEntity fontEntity = new CustomFontEntity();
+                    fontEntity.setFontName(font.getFamily());
+                    fontEntity.setFilePath(fontFile.getPath());
+                    fontRepo.save(fontEntity);
                     log.info("Font {} loaded successfully", font.getFamily());
                 } else {
                     log.warn("Font {} cannot be loaded", font.getFamily());

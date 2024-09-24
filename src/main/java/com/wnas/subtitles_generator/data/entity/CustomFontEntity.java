@@ -11,8 +11,8 @@ import lombok.Setter;
 public class CustomFontEntity {
     @Id
     @Column(name = "font_name")
-    private Long fontName;
+    private String fontName;
 
     @Column(name = "file_path")
-    private Long filePath;
+    private String filePath;
 }
