@@ -3,10 +3,7 @@ package com.wnas.subtitles_generator.testData;
 import com.wnas.subtitles_generator.api.model.RgbColorObject;
 import com.wnas.subtitles_generator.api.model.request.SubtitlesTextChunk;
 import com.wnas.subtitles_generator.api.model.request.UpdatePropertiesRequest;
-import com.wnas.subtitles_generator.data.entity.ColorEntity;
-import com.wnas.subtitles_generator.data.entity.SubtitlesEntity;
-import com.wnas.subtitles_generator.data.entity.TextChunk;
-import com.wnas.subtitles_generator.data.entity.VideoFileEntity;
+import com.wnas.subtitles_generator.data.entity.*;
 import com.wnas.subtitles_generator.data.entity.enumerators.VideoFileStatus;
 import com.wnas.subtitles_generator.data.entity.enumerators.VideoFileType;
 
@@ -89,5 +86,12 @@ public class TestData {
         textChunk.setStartFrame(startFrame);
         textChunk.setEndFrame(endFrame);
         return textChunk;
+    }
+
+    public static CustomFontEntity customFontEntity(String fontName) {
+        final CustomFontEntity fontEntity = new CustomFontEntity();
+        fontEntity.setFontName(fontName);
+        fontEntity.setFilePath(String.format("path/to/file/%s.ttf", fontName));
+        return fontEntity;
     }
 }
