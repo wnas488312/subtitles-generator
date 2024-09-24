@@ -12,4 +12,11 @@ public interface FontsService {
      * @return List of fonts names.
      */
     List<String> getDefaultFontsNames();
+
+    /**
+     * Gets file path of custom font file that is loaded and stored in DB.
+     * @param fontName  Name of a font (Family).
+     * @return          Path to font file.
+     */
+    String getCustomFontPath(String fontName);
 }

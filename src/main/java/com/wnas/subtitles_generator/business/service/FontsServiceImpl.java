@@ -2,6 +2,7 @@ package com.wnas.subtitles_generator.business.service;
 
 import com.wnas.subtitles_generator.data.CustomFontRepo;
 import com.wnas.subtitles_generator.data.entity.CustomFontEntity;
+import com.wnas.subtitles_generator.exception.NotFoundException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -49,6 +50,20 @@ public class FontsServiceImpl implements FontsService {
         return fontNamesList;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCustomFontPath(String fontName) {
+        final CustomFontEntity fontEntity = fontRepo.findById(fontName)
+                .orElseThrow(() -> new NotFoundException(String.format("Font with name %s is not present in DB.", fontName)));
+        return fontEntity.getFilePath();
+    }
+
+    /**
+     * Loads fonts files (.ttf format) stored in src/main/resources/fonts/ folder,
+     * makes them available through application and saves them in database.
+     */
     @PostConstruct
     public void loadCustomFonts() {
         log.info("Loading custom fonts");

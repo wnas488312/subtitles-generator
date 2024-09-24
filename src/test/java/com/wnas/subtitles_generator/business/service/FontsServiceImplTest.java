@@ -2,19 +2,20 @@ package com.wnas.subtitles_generator.business.service;
 
 import com.wnas.subtitles_generator.data.CustomFontRepo;
 import com.wnas.subtitles_generator.data.entity.CustomFontEntity;
+import com.wnas.subtitles_generator.exception.NotFoundException;
 import com.wnas.subtitles_generator.testData.TestData;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.*;
 
 class FontsServiceImplTest {
     // Place name of added custom font here before enabling loadCustomFontsTest() test
@@ -60,5 +61,27 @@ class FontsServiceImplTest {
                 .filter(fontName -> fontName.startsWith(AVAILABLE_FONT_NAME))
                 .findFirst();
         assertThat(foundCustomFont).isNotEmpty();
+    }
+
+    @Test
+    void getCustomFontPathTest() {
+        final CustomFontEntity fontEntity = TestData.customFontEntity("Custom font");
+
+        final CustomFontRepo repoMock = Mockito.mock(CustomFontRepo.class);
+        Mockito.when(repoMock.findById(eq(fontEntity.getFontName()))).thenReturn(Optional.of(fontEntity));
+
+        final String customFontPath = new FontsServiceImpl(repoMock).getCustomFontPath(fontEntity.getFontName());
+        assertThat(customFontPath).isNotNull();
+        assertThat(customFontPath).isEqualTo(fontEntity.getFilePath());
+    }
+
+    @Test
+    void getCustomFontPath_notFound_expectErrorTest() {
+        final CustomFontRepo repoMock = Mockito.mock(CustomFontRepo.class);
+        Mockito.when(repoMock.findById(anyString())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> new FontsServiceImpl(repoMock).getCustomFontPath("Unknown"))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("Font with name Unknown is not present in DB.");
     }
 }
