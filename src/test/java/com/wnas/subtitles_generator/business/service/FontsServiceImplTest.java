@@ -1,7 +1,10 @@
 package com.wnas.subtitles_generator.business.service;
 
+import com.wnas.subtitles_generator.data.CustomFontRepo;
+import com.wnas.subtitles_generator.data.entity.CustomFontEntity;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 class FontsServiceImplTest {
     // Place name of added custom font here before enabling loadCustomFontsTest() test
@@ -16,7 +20,8 @@ class FontsServiceImplTest {
 
     @Test
     void getDefaultFontsNamesTest() {
-        List<String> defaultFontsNames = new FontsServiceImpl().getDefaultFontsNames();
+        final CustomFontRepo repoMock = Mockito.mock(CustomFontRepo.class);
+        List<String> defaultFontsNames = new FontsServiceImpl(repoMock).getDefaultFontsNames();
         assertThat(defaultFontsNames).isNotEmpty();
 
         // Some most popular ones
@@ -28,7 +33,10 @@ class FontsServiceImplTest {
     @Test
     @Disabled
     void loadCustomFontsTest() {
-        new FontsServiceImpl().loadCustomFonts();
+        final CustomFontRepo repoMock = Mockito.mock(CustomFontRepo.class);
+        Mockito.when(repoMock.save(any(CustomFontEntity.class))).thenReturn(new CustomFontEntity());
+
+        new FontsServiceImpl(repoMock).loadCustomFonts();
 
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         Font[] allFonts = ge.getAllFonts();
