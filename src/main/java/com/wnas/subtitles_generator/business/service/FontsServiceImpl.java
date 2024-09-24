@@ -46,20 +46,20 @@ public class FontsServiceImpl implements FontsService {
                 .filter(file -> file.getName().endsWith(FONT_FILE_EXTENSION))
                 .toList();
 
-        for (File font: fonts) {
+        for (File fontFile: fonts) {
             try {
-                Font bangersFont = Font.createFont(Font.TRUETYPE_FONT, font);
+                Font font = Font.createFont(Font.TRUETYPE_FONT, fontFile);
 
                 GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-                boolean success = ge.registerFont(bangersFont);
+                boolean success = ge.registerFont(font);
 
                 if (success) {
-                    log.info("Font {} loaded successfully", font.getName());
+                    log.info("Font {} loaded successfully", font.getFamily());
                 } else {
-                    log.warn("Font {} cannot be loaded", font.getName());
+                    log.warn("Font {} cannot be loaded", font.getFamily());
                 }
             } catch (IOException | FontFormatException e) {
-                log.error("Error occurred when loading font: {}", font.getName(), e);
+                log.error("Error occurred when loading font from file: {}", fontFile.getName(), e);
             }
         }
     }
