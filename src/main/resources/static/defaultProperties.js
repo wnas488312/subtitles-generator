@@ -15,7 +15,7 @@ function populatePropertiesForm(properties) {
         const fontNameNoSpace = fontName.replace(/\s+/g, '');
         const opt = document.createElement('option');
         opt.value = fontNameNoSpace;
-        opt.text = fontName;
+        opt.text = fontName.replace('CUSTOM_', '');
         dropdown.appendChild(opt);
     });
 
@@ -33,11 +33,25 @@ function populatePropertiesForm(properties) {
 }
 
 function updateProperties() {
-    const fontName = fontNameDropDown.value;
+    const fontNameValue = fontNameDropDown.value;
+    if (fontNameValue.indexOf('CUSTOM_') !== -1) {
+        const fontName = fontNameValue.replace('CUSTOM_', '');
+        const fontUrl = `http://localhost:8080/fonts/${fontName}`;
+
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @font-face {
+                font-family: '${fontName}';
+                src: url('${fontUrl}') format('truetype');
+            }
+            `;
+        document.head.appendChild(style);
+        document.getElementById('textOverlay').style.fontFamily = fontName;
+    }
+
     const fontSize = parseInt(fontSizeInput.value);
 
     const ratio = videoWidth == undefined? 1: 600 / videoWidth;
-    console.log("Ratio: " + ratio);
 
     const fontValue = fontSize * ratio + "px " + fontName;
 

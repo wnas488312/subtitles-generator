@@ -25,7 +25,7 @@ function startProcessing() {
 
     const req = {
         bottomMargin: parseInt(bottomMarginInput.value),
-        fontName: fontNameDropDown.value,
+        fontName: fontNameDropDown.value.replace('CUSTOM_', ''),
         textChunks: textChunks,
         fontSize: parseInt(fontSizeInput.value),
         fontColor: hexToRgb(fontColorInput.value),
