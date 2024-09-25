@@ -33,30 +33,31 @@ function populatePropertiesForm(properties) {
 }
 
 function updateProperties() {
-    const fontNameValue = fontNameDropDown.value;
-    if (fontNameValue.indexOf('CUSTOM_') !== -1) {
-        const fontName = fontNameValue.replace('CUSTOM_', '');
+    const fontSize = parseInt(fontSizeInput.value);
+    const ratio = videoWidth == undefined? 1: 600 / videoWidth;
+    let fontName = fontNameDropDown.value;
+    if (fontName.indexOf('CUSTOM_') !== -1) {
+        fontName = fontName.replace('CUSTOM_', '');
         const fontUrl = `http://localhost:8080/fonts/${fontName}`;
 
         const style = document.createElement('style');
-        style.innerHTML = `
+        const bla = `
             @font-face {
                 font-family: '${fontName}';
+                font-size: ${fontSize * ratio}px;
                 src: url('${fontUrl}') format('truetype');
             }
             `;
+        console.log(bla);
+        style.innerHTML = bla;
         document.head.appendChild(style);
-        document.getElementById('textOverlay').style.fontFamily = fontName;
+        //document.getElementById('textOverlay').style.fontFamily = fontName;
+        //document.getElementById('textOverlay').style.fontSize = `${fontSize * ratio}px`
     }
 
-    const fontSize = parseInt(fontSizeInput.value);
-
-    const ratio = videoWidth == undefined? 1: 600 / videoWidth;
-
-    const fontValue = fontSize * ratio + "px " + fontName;
-
     let textOverlay = document.getElementById('textOverlay');
-    textOverlay.style.font = fontValue;
+    textOverlay.style.fontFamily = fontName;
+    textOverlay.style.fontSize = `${fontSize * ratio}px`
     textOverlay.style.color = fontColorInput.value;
     textOverlay.style.top = (-((fontSize * 1.5) + parseInt(bottomMarginInput.value)) * ratio) + "px";
 }
