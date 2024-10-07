@@ -51,8 +51,6 @@ function updateProperties() {
         console.log(bla);
         style.innerHTML = bla;
         document.head.appendChild(style);
-        //document.getElementById('textOverlay').style.fontFamily = fontName;
-        //document.getElementById('textOverlay').style.fontSize = `${fontSize * ratio}px`
     }
 
     let textOverlay = document.getElementById('textOverlay');
