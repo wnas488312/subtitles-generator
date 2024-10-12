@@ -1,7 +1,12 @@
 package com.wnas.subtitles_generator.business.generator;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class used to generate images with provided text subtitles chunk.
@@ -56,6 +61,51 @@ public class ImageGenerator {
         g2d.drawString(this.text, xTextPosition, yTextPosition);
         g2d.dispose();
 
-        return image;
+        final int outlineSizeInPixels = 5; //TODO: replace with value provided by API
+        return appendOutlineToSubtitles(image, outlineSizeInPixels);
+    }
+
+    private BufferedImage appendOutlineToSubtitles(BufferedImage image, int numberOfIterations) {
+        if (numberOfIterations <= 0) {
+            return image;
+        }
+
+        final Color[][] pixels = new Color[image.getWidth()] [image.getHeight()];
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
+                int rgb = image.getRGB(i, j);
+                int alpha = (rgb >> 24) & 0xff;
+                int red = (rgb >> 16) & 0xFF;
+                int green = (rgb >> 8) & 0xFF;
+                int blue = rgb & 0xFF;
+
+                pixels[i][j] = new Color(red, green, blue, alpha);
+            }
+        }
+
+        for (int i = 0; i < image.getWidth(); i++) {
+            for (int j = 0; j < image.getHeight(); j++) {
+                final boolean outOfBounds = i < 1 || j < 1 || i > image.getWidth() - 2 || j > image.getHeight() - 2;
+
+                final boolean nextToNotAlpha = !outOfBounds &&
+                        (
+                                extractAlphaFromPixels(pixels, i-1, j) != 0 ||
+                                extractAlphaFromPixels(pixels, i, j-1) != 0 ||
+                                extractAlphaFromPixels(pixels, i + 1, j) != 0 ||
+                                extractAlphaFromPixels(pixels, i, j + 1) != 0
+                        );
+
+                if (extractAlphaFromPixels(pixels, i, j) == 0 && nextToNotAlpha) {
+                    final int rgbUpdated = (255 << 24) | (0);
+                    image.setRGB(i, j, rgbUpdated);
+                }
+            }
+        }
+        return appendOutlineToSubtitles(image, numberOfIterations - 1);
+    }
+
+    private int extractAlphaFromPixels(Color[][] pixels, int x, int y) {
+        Color color = pixels[x][y];
+        return color.getAlpha();
     }
 }
