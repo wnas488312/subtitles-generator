@@ -22,6 +22,7 @@ function startProcessing() {
     const bottomMarginInput = document.getElementById('bottomMargin');
     const fontSizeInput = document.getElementById('fontSize');
     const fontColorInput = document.getElementById('fontColor');
+    const outlineInPixelsInput = document.getElementById('outlineInPixels');
 
     const req = {
         bottomMargin: parseInt(bottomMarginInput.value),
@@ -29,6 +30,7 @@ function startProcessing() {
         textChunks: textChunks,
         fontSize: parseInt(fontSizeInput.value),
         fontColor: hexToRgb(fontColorInput.value),
+        outlineInPixels: parseInt(outlineInPixelsInput.value)
     };
 
     fetch('/subtitles/' + id, {
