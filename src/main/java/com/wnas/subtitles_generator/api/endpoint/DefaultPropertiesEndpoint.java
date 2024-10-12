@@ -45,7 +45,8 @@ public class DefaultPropertiesEndpoint implements DefaultPropertiesApi {
                 converter.convert(config.getFontColor()),
                 config.getDefaultFontName(),
                 defaultFontsNames,
-                config.getBottomMargin()
+                config.getBottomMargin(),
+                config.getOutlineInPixels()
         );
     }
 }

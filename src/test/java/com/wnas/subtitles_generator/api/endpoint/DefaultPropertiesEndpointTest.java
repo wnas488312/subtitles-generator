@@ -26,6 +26,7 @@ class DefaultPropertiesEndpointTest {
     private static final Integer FONT_SIZE = 12;
     private static final RgbColorObject DEFAULT_FONT_COLOR = new RgbColorObject(200, 200, 200);
     private static final List<String> FONTS_NAMES = List.of(DEFAULT_FONT_NAME, "Sans Sarif");
+    private static final Integer OUTLINE_IN_PIXELS = 3;
 
     @Mock
     private SubtitlesGenerationDefaultPropertiesConfig config;
@@ -43,6 +44,7 @@ class DefaultPropertiesEndpointTest {
         when(config.getBottomMargin()).thenReturn(BOTTOM_MARGIN);
         when(config.getFontSize()).thenReturn(FONT_SIZE);
         when(config.getFontColor()).thenReturn(new PropertiesFontColor(200, 200, 200));
+        when(config.getOutlineInPixels()).thenReturn(OUTLINE_IN_PIXELS);
 
         when(fontsService.getDefaultFontsNames()).thenReturn(FONTS_NAMES);
 
@@ -56,6 +58,7 @@ class DefaultPropertiesEndpointTest {
         assertThat(response.fontSize()).isEqualTo(FONT_SIZE);
         assertThat(response.fontColor()).isEqualTo(DEFAULT_FONT_COLOR);
         assertThat(response.fontNames()).isEqualTo(FONTS_NAMES);
+        assertThat(response.outlineInPixels()).isEqualTo(OUTLINE_IN_PIXELS);
     }
 
     @Test

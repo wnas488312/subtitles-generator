@@ -14,4 +14,5 @@ public class SubtitlesGenerationDefaultPropertiesConfig {
     private PropertiesFontColor fontColor;
     private String defaultFontName;
     private Integer bottomMargin;
+    private Integer outlineInPixels;
 }

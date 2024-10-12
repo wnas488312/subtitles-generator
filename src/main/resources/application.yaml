@@ -13,6 +13,7 @@ s-generator:
       b: 200
     default-font-name: Arial
     bottom-margin: 50
+    outline-in-pixels: 3
 
 spring:
   application:
