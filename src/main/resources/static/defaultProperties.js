@@ -2,6 +2,7 @@ const fontSizeInput = document.getElementById('fontSize');
 const fontNameDropDown = document.getElementById('fontName');
 const bottomMarginInput = document.getElementById('bottomMargin');
 const fontColorInput = document.getElementById('fontColor');
+const outlineInPixelsInput = document.getElementById('outlineInPixels');
 
 function getDefaultProperties() {
     fetch('/properties/default', { method: 'GET' })
@@ -22,12 +23,14 @@ function populatePropertiesForm(properties) {
     fontNameDropDown.value = properties.defaultFontName;
     fontSizeInput.value = properties.fontSize;
     bottomMarginInput.value = properties.bottomMargin;
+    outlineInPixelsInput.value = properties.outlineInPixels;
     fontColorInput.value = rgbToHex(properties.fontColor.r, properties.fontColor.g, properties.fontColor.b);
 
     fontSizeInput.addEventListener('change', () => updateProperties());
     fontNameDropDown.addEventListener('change', () => updateProperties());
     fontColorInput.addEventListener('change', () => updateProperties());
     bottomMarginInput.addEventListener('change', () => updateProperties());
+    outlineInPixelsInput.addEventListener('change', () => updateProperties());
 
     updateProperties();
 }
