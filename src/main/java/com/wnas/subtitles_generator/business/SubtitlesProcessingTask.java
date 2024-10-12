@@ -115,7 +115,8 @@ public class SubtitlesProcessingTask extends Thread{
                 entry.getHeight(),
                 entry.getBottomMargin(),
                 entry.getFontSize(),
-                new Color(entry.getColor().getR(), entry.getColor().getG(), entry.getColor().getB())
+                new Color(entry.getColor().getR(), entry.getColor().getG(), entry.getColor().getB()),
+                entry.getOutlineInPixels()
         );
         final BufferedImage image = imageGenerator.generateImage();
         return new VideoGeneratorProcessingContext.ImageWithFrameCoordinates(image, chunk.getStartFrame(), chunk.getEndFrame());

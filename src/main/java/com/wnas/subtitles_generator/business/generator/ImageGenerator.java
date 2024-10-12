@@ -20,6 +20,7 @@ public class ImageGenerator {
     private final int margin;
     private final int fontSize;
     private final Color fontColor;
+    private final int outlineInPixels;
 
     /**
      * A public constructor.
@@ -32,7 +33,7 @@ public class ImageGenerator {
      * @param fontSize  Size of a font in pixels.
      * @param fontColor Color of a fount in RGB.
      */
-    public ImageGenerator(String text, String fontName, int width, int height, int margin, int fontSize, Color fontColor) {
+    public ImageGenerator(String text, String fontName, int width, int height, int margin, int fontSize, Color fontColor, int outlineInPixels) {
         this.text = text;
         this.fontName = fontName;
         this.width = width;
@@ -40,6 +41,7 @@ public class ImageGenerator {
         this.margin = margin;
         this.fontSize = fontSize;
         this.fontColor = fontColor;
+        this.outlineInPixels = outlineInPixels;
     }
 
     /**
@@ -61,8 +63,7 @@ public class ImageGenerator {
         g2d.drawString(this.text, xTextPosition, yTextPosition);
         g2d.dispose();
 
-        final int outlineSizeInPixels = 5; //TODO: replace with value provided by API
-        return appendOutlineToSubtitles(image, outlineSizeInPixels);
+        return appendOutlineToSubtitles(image, outlineInPixels);
     }
 
     private BufferedImage appendOutlineToSubtitles(BufferedImage image, int numberOfIterations) {
