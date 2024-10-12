@@ -27,3 +27,10 @@ databaseChangeLog:
         - sqlFile:
             path: db/changelog/sql/create_custom_fonts_table.sql
             relativeToChangelogFile: false
+  - changeSet:
+      id: 05
+      author: wnas
+      changes:
+        - sqlFile:
+            path: db/changelog/sql/alter_table_subtitles_add_outline_column.sql
+            relativeToChangelogFile: false

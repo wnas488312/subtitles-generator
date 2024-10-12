@@ -1,0 +1,1 @@
+ALTER TABLE subtitles ADD COLUMN outline_in_pixels INT;

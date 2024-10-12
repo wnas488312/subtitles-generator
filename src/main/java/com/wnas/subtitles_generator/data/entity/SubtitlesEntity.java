@@ -61,6 +61,9 @@ public class SubtitlesEntity {
     @Column(name = "font_color_b")
     private Integer colorB;
 
+    @Column(name = "outline_in_pixels")
+    private Integer outlineInPixels;
+
     @Transient
     private ColorEntity color;
 
