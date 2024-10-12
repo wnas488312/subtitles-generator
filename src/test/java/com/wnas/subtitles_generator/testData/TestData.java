@@ -20,7 +20,7 @@ public class TestData {
     public static UpdatePropertiesRequest updatePropertiesRequest() {
         SubtitlesTextChunk subtitlesTextChunk1 = new SubtitlesTextChunk("Lorem ipsum dolor sit amet", 0, 100);
         SubtitlesTextChunk subtitlesTextChunk2 = new SubtitlesTextChunk("consectetur adipiscing elit", 100, 200);
-        return new UpdatePropertiesRequest(50,  "ARIAL", new RgbColorObject(0, 0, 0), 24, List.of(subtitlesTextChunk1, subtitlesTextChunk2));
+        return new UpdatePropertiesRequest(50,  "ARIAL", new RgbColorObject(0, 0, 0), 24, List.of(subtitlesTextChunk1, subtitlesTextChunk2), 3);
     }
 
     public static SubtitlesTextChunk subtitlesTextChunk() {
@@ -38,6 +38,7 @@ public class TestData {
         subtitlesEntity.setFontSize(24);
         subtitlesEntity.setStatus(VideoFileStatus.PROCESSING);
         subtitlesEntity.setCreationDate(LocalDateTime.of(2025, 8, 19, 12,20));
+        subtitlesEntity.setOutlineInPixels(3);
 
         TextChunk textChunk1 = textChunk("Lorem ipsum dolor sit amet", 0, 100);
         TextChunk textChunk2 = textChunk("consectetur adipiscing elit", 100, 200);

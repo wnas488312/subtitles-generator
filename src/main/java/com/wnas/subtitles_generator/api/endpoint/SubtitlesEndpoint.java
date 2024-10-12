@@ -87,7 +87,8 @@ public class SubtitlesEndpoint implements SubtitlesApi {
                 request.fontColor(),
                 request.fontSize(),
                 chunks,
-                subtitlesEntity.getCreationDate()
+                subtitlesEntity.getCreationDate(),
+                subtitlesEntity.getOutlineInPixels()
         );
     }
 

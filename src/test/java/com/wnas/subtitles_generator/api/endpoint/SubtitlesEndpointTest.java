@@ -90,6 +90,7 @@ class SubtitlesEndpointTest {
         assertThat(response.bottomMargin()).isEqualTo(subtitlesEntity.getBottomMargin());
         assertThat(response.creationDate()).isEqualTo(subtitlesEntity.getCreationDate());
         assertThat(response.fontName()).isEqualTo(subtitlesEntity.getFontName());
+        assertThat(response.outlineInPixels()).isEqualTo(subtitlesEntity.getOutlineInPixels());
 
         assertThat(response.textChunks()).hasSize(2);
         assertThat(response.textChunks().getFirst()).isEqualTo(subtitlesTextChunk);

@@ -65,6 +65,10 @@ public class SubtitlesServiceImpl implements SubtitlesService {
             old.setFontSize(request.fontSize());
         }
 
+        if (!Objects.isNull(request.outlineInPixels())) {
+            old.setOutlineInPixels(request.outlineInPixels());
+        }
+
         if (!Objects.isNull(request.fontColor())) {
             old.setColor(
                     new ColorEntity(

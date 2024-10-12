@@ -80,6 +80,7 @@ class SubtitlesServiceImplTest {
         assertThat(saved).isNotNull();
         assertThat(saved.getBottomMargin()).isEqualTo(request.bottomMargin());
         assertThat(saved.getFontName()).isEqualTo(request.fontName());
+        assertThat(saved.getOutlineInPixels()).isEqualTo(request.outlineInPixels());
         assertThat(saved.getTextChunks()).hasSize(subtitles.getTextChunks().size());
         assertThat(saved.getTextChunks().getFirst()).isEqualTo(textChunk);
         assertThat(saved.getTextChunks().getLast()).isEqualTo(textChunk);
@@ -95,7 +96,7 @@ class SubtitlesServiceImplTest {
         when(textChunksConverter.convert(any())).thenReturn(textChunk);
 
         UpdatePropertiesRequest request = TestData.updatePropertiesRequest();
-        request = new UpdatePropertiesRequest(null, request.fontName(), new RgbColorObject(0, 0, 0), 24, request.textChunks());
+        request = new UpdatePropertiesRequest(null, request.fontName(), new RgbColorObject(0, 0, 0), 24, request.textChunks(), 3);
 
         SubtitlesEntity updated = service.updateSubtitlesPropertiesFromRequest(subtitles.getId(), request);
 
@@ -119,7 +120,7 @@ class SubtitlesServiceImplTest {
         when(textChunksConverter.convert(any())).thenReturn(textChunk);
 
         UpdatePropertiesRequest request = TestData.updatePropertiesRequest();
-        request = new UpdatePropertiesRequest(request.bottomMargin(), null, new RgbColorObject(0, 0, 0), 24, request.textChunks());
+        request = new UpdatePropertiesRequest(request.bottomMargin(), null, new RgbColorObject(0, 0, 0), 24, request.textChunks(), 3);
 
         SubtitlesEntity updated = service.updateSubtitlesPropertiesFromRequest(subtitles.getId(), request);
 
